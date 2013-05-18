@@ -1,0 +1,1 @@
+./configure --with-log-dir=/dev/null --disable-cheuid  --disable-login --disable-ssl --disable-nls  && make && make install

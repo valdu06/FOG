@@ -1,0 +1,12 @@
+config BR2_PACKAGE_PARTIMAGE
+	bool "Partimage"
+	select BR2_PACKAGE_ZLIB
+	select BR2_PACKAGE_BZIP2
+	select BR2_PACKAGE_NEWT
+	select BR2_PACKAGE_OPENSSL
+	help
+	  Partimage is opensource disk backup software. It saves partitions having a supported 
+	  filesystem on a sector basis to an image file. Although it runs under Linux, Windows 
+	  and most Linux filesystems are supported. The image file can be compressed to save 
+	  disk space and transfer time and can be split into multiple files to be copied to 
+	  CDs or DVDs. 

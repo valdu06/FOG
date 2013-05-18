@@ -1,0 +1,89 @@
+diff -pruN gdisk-0.6.13/gpt.cc gdisk-0.6.13.new/gpt.cc
+--- gdisk-0.6.13/gpt.cc	2010-10-12 11:20:05.000000000 -0500
++++ gdisk-0.6.13.new/gpt.cc	2010-12-02 21:26:44.660398682 -0600
+@@ -1677,6 +1677,35 @@ uint32_t GPTData::CreatePartition(uint32
+    return retval;
+ } // GPTData::CreatePartition(partNum, startSector, endSector)
+ 
++// Non-interactively extend a partition.
++// Returns 1 if the operation was successful, 0 if a problem was discovered.
++uint32_t GPTData::ExtendPartition(uint32_t partNum, uint64_t endSector) {
++   int retval = 1; // assume there'll be no problems
++  
++   if (!IsFreePartNum(partNum)) {
++      uint64_t startSector = partitions[partNum].GetFirstLBA();
++      uint64_t origEndSector = partitions[partNum].GetLastLBA();
++      if (endSector == -1) {
++         endSector = FindLastInFree(origEndSector+1);
++      }
++      //Extend
++      if (origEndSector <= endSector) {
++         if (IsFree(origEndSector+1)) {
++            if (FindLastInFree(origEndSector+1) >= endSector) {
++               partitions[partNum].SetLastLBA(endSector);
++            } else retval = 0; // if free space until endSector
++         } else retval = 0; // if startSector is free
++      } else if (startSector <= endSector) { 
++         //Shrink
++         cout << "Information: " << partNum << " shrunk from sector " 
++              << origEndSector << " to " << endSector << " if this is"
++              << "not what you wanted run extend again to repair.\n";
++         partitions[partNum].SetLastLBA(endSector);
++      } else retval = 0; // if endSector is less than startSector
++   } else retval = 0; // if not a legal partition number
++   return retval;
++} // GPTData::ExtendPartition(partNum, endSector)
++
+ // Sort the GPT entries, eliminating gaps and making for a logical
+ // ordering. Relies on QuickSortGPT() for the bulk of the work
+ void GPTData::SortGPT(void) {
+diff -pruN gdisk-0.6.13/gpt.h gdisk-0.6.13.new/gpt.h
+--- gdisk-0.6.13/gpt.h	2010-10-12 11:20:05.000000000 -0500
++++ gdisk-0.6.13.new/gpt.h	2010-12-02 19:08:10.415273265 -0600
+@@ -152,6 +152,7 @@ public:
+    void BlankPartitions(void);
+    int DeletePartition(uint32_t partNum);
+    uint32_t CreatePartition(uint32_t partNum, uint64_t startSector, uint64_t endSector);
++   uint32_t ExtendPartition(uint32_t partNum, uint64_t endSector);
+    void SortGPT(void);
+    void QuickSortGPT(int start, int finish);
+    int SwapPartitions(uint32_t partNum1, uint32_t partNum2);
+diff -pruN gdisk-0.6.13/sgdisk.cc gdisk-0.6.13.new/sgdisk.cc
+--- gdisk-0.6.13/sgdisk.cc	2010-10-12 11:20:05.000000000 -0500
++++ gdisk-0.6.13.new/sgdisk.cc	2010-12-02 20:55:14.825274163 -0600
+@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
+    char *newPartInfo = NULL, *typeCode = NULL, *partName = NULL;
+    char *backupFile = NULL, *twoParts = NULL, *hybrids = NULL, *mbrParts;
+    char *partGUID = NULL, *diskGUID = NULL, *outDevice = NULL;
++   char *extEnd = NULL;
+    string cmd, typeGUID;
+    PartType typeHelper;
+ 
+@@ -82,6 +83,7 @@ int main(int argc, char *argv[]) {
+       {"disk-guid", 'U', POPT_ARG_STRING, &diskGUID, 'U', "set disk GUID", "guid"},
+       {"verify", 'v', POPT_ARG_NONE, NULL, 'v', "check partition table integrity", ""},
+       {"version", 'V', POPT_ARG_NONE, NULL, 'V', "display version information", ""},
++      {"extend", 'x', POPT_ARG_STRING, &extEnd, 'x', "set the end of a partition", "partnum:endsector"},
+       {"zap", 'z', POPT_ARG_NONE, NULL, 'z', "zap (destroy) GPT (but not MBR) data structures", ""},
+       {"zap-all", 'Z', POPT_ARG_NONE, NULL, 'Z', "zap (destroy) GPT and MBR data structures", ""},
+       POPT_AUTOHELP { NULL, 0, 0, NULL, 0 }
+@@ -347,6 +349,19 @@ int main(int argc, char *argv[]) {
+                case 'v':
+                   theGPT.Verify();
+                   break;
++               case 'x':
++                  theGPT.JustLooking(0);
++                  partNum = (int) GetInt(extEnd, 1) - 1;
++                  endSector = GetInt(extEnd, 2);
++                  if (theGPT.ExtendPartition(partNum, endSector)) {
++                     saveData = 1;
++                  } else {
++                     cerr << "Could not extend partition " << partNum 
++                          << " to " << endSector << "\n";
++                     neverSaveData = 1;
++                  } // if/else
++                  free(extEnd);
++                  break;
+                case 'z':
+                   if (!pretend) {
+                      theGPT.DestroyGPT();

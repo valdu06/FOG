@@ -1,0 +1,80 @@
+html, body { height: 100%; }
+body { margin: 0; padding: 0; background: #FFFFFF url(images/img01.gif) repeat-x; font-family: Ubuntu, Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; }
+
+h1, h2, h3, h4, h5, h6 { margin: 0; /*text-transform: lowercase;*/ font-weight: normal; color: #3E3E3E; }
+h1 { font-size: 32px; }
+h2 { font-size: 23px; }
+h3 { font-weight: bold; line-height: 26px; margin: 15px 0; }
+
+p { line-height: 26px; }
+
+a:link, a:visited { color: #7BAA0F; }
+a:hover, a:active { text-decoration: none; color: #003448; }
+
+img { border: none; }
+img.left { float: left; margin-right: 15px; }
+img.right { float: right; margin-left: 15px; }
+
+/* Form */
+
+form { margin: 0; padding: 0; }
+fieldset { margin: 0; padding: 0; border: none; }
+legend { display: none; }
+input, textarea, select { font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; font-size: 13px; color: #333333; }
+
+/* Menu */
+
+#menu { margin: 0 auto; }
+#menu ul { margin: 0; padding: 15px 0 0 0; list-style: none; line-height: 26px; }
+#menu li { display: inline; }
+#menu a { display: block; float: left; margin-left: 13px; padding: 7px; text-decoration: none; font-size: 13px; color: #000000; height: 40px; /* need to set the height or IE does not determine the correct height */ }
+#menu a:hover {  }
+#menu .active a { background: url(images/img02.gif) repeat-x left bottom; }
+#menu .active a:hover { background: transparent; }
+
+/* Structure */
+
+#wrapper { width: 850px; margin: 0 auto; min-height: 100%; }
+#content { float: right; width: 620px; padding-bottom: 21px; background: url(images/img05.png) no-repeat center top; }
+#content-inner { padding: 0 10px; }
+#content h1 { text-align: center; height: 50px; line-height: 50px; }
+#content h2 { font-size: 18px; margin: 0; padding: 0 0 15px 0; text-align: center; }
+#content.dashboard { width: 795px; background-image: url('images/img05-dashboard.png'); float: none; margin: 0 auto; }
+#content-title.dashboard { width: 815px; }
+
+
+/* Header */
+
+#header { width: 850px; height: 120px; margin: 0 auto 30px auto; padding-top: 50px; background: url(images/img03.gif) repeat-x left bottom; }
+#header.login { height: 80px; }
+
+#logo {  }
+#logo h1 { font-size: 38px; color: #494949; }
+#logo h1 sup { vertical-align: text-top; font-size: 24px; }
+#logo h1 a { color: #494949; }
+#logo h2 { margin-top: -7px; font-size: 12px; color: #A0A0A0; }
+#logo a { text-decoration: none; }
+
+/* Footer */
+
+#footer { height: 21px; padding: 0; margin: -21px 0 0 0; background: #003448 url(images/img09.gif) repeat-x; color: #fff; position: relative; clear: both; text-align: center; font-size: 11px; line-height: 21px; }
+
+/* Sidebar */
+
+#sidebar { float: left; width: 195px; border-right: 1px solid #efefef; padding-right: 10px; }
+#sidebar ul { margin: 0; padding: 0; list-style: none; margin-bottom: 20px; }
+#sidebar li { font-size: 13px; line-height: 18px; }
+#sidebar li ul { }
+#sidebar li li { margin: 0; }
+#sidebar h2 { margin-bottom: 10px; background: url(images/img03.gif) repeat-x left bottom; font-size: 16px; }
+
+/* Search */
+
+#search { }
+#search h2 { margin-bottom: 20px; }
+
+.nav-label { background: #333; color: #fff; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; position: absolute; z-index: 2; font-size: 12px; padding: 0 10px; display: none; top: 172px; line-height: 25px; height: 25px; }
+
+#sidenotes { background: #efefef; border: 1px solid #ccc; padding: 10px; font-size: 12px; }
+#sidenotes h3 { text-decoration: underline; margin: 0; }
+#sidenotes p { margin-bottom: 0; }
